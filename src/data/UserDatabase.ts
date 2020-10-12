@@ -3,8 +3,8 @@ import { User } from "../model/User";
 
 export class UserDatabase extends BaseDatabase {
 
-  private static TABLE_NAME = "";
-  private static TABLE_IMAGES = "";
+  private static TABLE_NAME = "image_management_users";
+  private static TABLE_IMAGES = "image_management_images";
 
   public async createUser(
     id: string,
@@ -28,13 +28,13 @@ export class UserDatabase extends BaseDatabase {
     }
   }
 
-  public async getUserByEmail(email: string): Promise<User> {
+  public async getUserByEmail(email: string): Promise<any> {
     const result = await this.getConnection()
       .select("*")
       .from(UserDatabase.TABLE_NAME)
       .where({ email });
 
-    return User.toUserModel(result[0]);
+      return User.toUserModel(result[0]);
   }
 
   public async getUserById(id: string): Promise<User> {
@@ -46,16 +46,16 @@ export class UserDatabase extends BaseDatabase {
     return User.toUserModel(result[0]);
   }
 
-  public async getProfile(id: string): Promise<User> {
+  public async getProfile(id: string): Promise<any> {
     const result = await this.getConnection().raw(`
       SELECT *
       FROM ${UserDatabase.TABLE_NAME} u
-      WHERE u.id = "${id}"
       JOIN ${UserDatabase.TABLE_IMAGES} i
-      ON i.author = u.nickname
+      ON u.nickname = i.author
+      WHERE u.id = "${id}"
     `)
 
-    return User.toUserModel(result[0]);
+    return result[0][0];
   }
 
   public async deleteUser(id: string): Promise<void> {

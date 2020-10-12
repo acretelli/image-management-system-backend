@@ -1,9 +1,19 @@
 import { Request, Response } from "express";
 import { ImageBusiness } from "../business/ImageBusiness";
 import { BaseDatabase } from "../data/BaseDatabase";
+import { ImageDatabase } from "../data/ImageDatabase";
 import { ImageInputDTO } from "../model/Image";
+import { Authenticator } from "../services/Authenticator";
+import { IdGenerator } from "../services/IdGenerator";
 
 export class ImageController {
+        
+    private static imageBusiness = new ImageBusiness(
+        new ImageDatabase,
+        new IdGenerator,
+        new Authenticator
+    );
+
     async createImage(req: Request, res: Response) {
         try {
             const token = req.headers.authorization as string;
@@ -17,8 +27,7 @@ export class ImageController {
                 collection: req.body.collection
             }
 
-            const imageBusiness = new ImageBusiness();
-            await imageBusiness.createImage(token, input);
+            await ImageController.imageBusiness.createImage(token, input);
 
             res.status(200).send({ message: "Image created successfully" });
 
@@ -35,8 +44,7 @@ export class ImageController {
             const token = req.headers.authorization as string;
             const id = req.params.id
 
-            const imageBusiness = new ImageBusiness();
-            const image = await imageBusiness.getImageById(token, id);
+            const image = await ImageController.imageBusiness.getImageById(token, id);
 
             res.status(200).send({ image });
 
@@ -52,8 +60,7 @@ export class ImageController {
         try {
             const token = req.headers.authorization as string;
 
-            const imageBusiness = new ImageBusiness();
-            const image = await imageBusiness.getAllImages(token);
+            const image = await ImageController.imageBusiness.getAllImages(token);
 
             res.status(200).send({ image });
 
@@ -70,8 +77,7 @@ export class ImageController {
             const token = req.headers.authorization as string;
             const id = req.params.id
 
-            const imageBusiness = new ImageBusiness();
-            const image = await imageBusiness.delete(token, id);
+            await ImageController.imageBusiness.delete(token, id);
 
             res.status(200).send({ message: "Image deleted successfully" });
 

@@ -2,20 +2,31 @@ import { Request, Response } from "express";
 import { UserInputDTO, LoginInputDTO} from "../model/User";
 import { UserBusiness } from "../business/UserBusiness";
 import { BaseDatabase } from "../data/BaseDatabase";
+import { UserDatabase } from "../data/UserDatabase";
+import { IdGenerator } from "../services/IdGenerator";
+import { HashManager } from "../services/HashManager";
+import { Authenticator } from "../services/Authenticator";
 
 export class UserController {
+        
+    private static userBusiness = new UserBusiness(
+        new UserDatabase,
+        new IdGenerator,
+        new HashManager,
+        new Authenticator
+    );
+
     async signup(req: Request, res: Response) {
         try {
 
             const input: UserInputDTO = {
-                email: req.body.email,
                 name: req.body.name,
+                email: req.body.email,
                 nickname: req.body.nickname,
                 password: req.body.password,
             }
 
-            const userBusiness = new UserBusiness();
-            const token = await userBusiness.createUser(input);
+            const token = await UserController.userBusiness.createUser(input);
 
             res.status(200).send({ token });
 
@@ -35,8 +46,7 @@ export class UserController {
                 password: req.body.password
             };
 
-            const userBusiness = new UserBusiness();
-            const token = await userBusiness.getUserByEmail(loginData);
+            const token = await UserController.userBusiness.getUserByEmail(loginData);
 
             res.status(200).send({ token });
 
@@ -54,8 +64,7 @@ export class UserController {
             const token = req.headers.authorization as string;
             const id = req.params.id;
 
-            const userBusiness = new UserBusiness();
-            const user = await userBusiness.getUserById(token, id);
+            const user = await UserController.userBusiness.getUserById(token, id);
 
             res.status(200).send({ user });
 
@@ -72,8 +81,7 @@ export class UserController {
 
             const token = req.headers.authorization as string;
 
-            const userBusiness = new UserBusiness();
-            const user = await userBusiness.getProfile(token);
+            const user = await UserController.userBusiness.getProfile(token);
 
             res.status(200).send({ user });
 
@@ -89,8 +97,7 @@ export class UserController {
 
             const token = req.headers.authorization as string;
 
-            const userBusiness = new UserBusiness();
-            const user = await userBusiness.deleteUser(token);
+            await UserController.userBusiness.deleteUser(token);
 
             res.status(200).send({ message: "User deleted successfully" });
 

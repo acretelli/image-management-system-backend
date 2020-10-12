@@ -3,7 +3,7 @@ import { Image } from "../model/Image";
 
 export class ImageDatabase extends BaseDatabase {
 
-  private static TABLE_NAME = "";
+  private static TABLE_NAME = "image_management_images";
 
   public async createImage(
     id: string,
