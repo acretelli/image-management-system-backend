@@ -4,6 +4,7 @@ import { ImageInputDTO } from "../model/Image";
 import { ImageDatabase } from "../data/ImageDatabase";
 import { InvalidParameterError } from "../error/InvalidParameterError";
 import { UnauthorizedError } from "../error/UnauthorizedError";
+import { UserDatabase } from "../data/UserDatabase";
 
 export class ImageBusiness {
 
@@ -22,11 +23,14 @@ export class ImageBusiness {
         const id = this.idGenerator.generate();
         const accessToken = this.authenticator.getData(token);
 
+        const userDatabase = new UserDatabase();
+        const user = await userDatabase.getProfile(accessToken.id)
+
         if (!accessToken) {
             throw new UnauthorizedError("You don't have permission to do that.");
         }
 
-        await this.imageDatabase.createImage(id, image.subtitle, image.author, image.date, image.file, image.tags, image.collection);
+        await this.imageDatabase.createImage(id, image.subtitle, user.nickname, image.date, image.file, image.tags, image.collection);
 
         return accessToken;
     }
@@ -61,6 +65,15 @@ export class ImageBusiness {
         const accessToken = this.authenticator.getData(token);
 
         if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const userDatabase = new UserDatabase();
+        const user = await userDatabase.getProfile(accessToken.id)
+
+        const image = await this.imageDatabase.getImageById(id)
+
+        if(user.nickname !== image.getAuthor()) {
             throw new UnauthorizedError("You don't have permission to do that.");
         }
 

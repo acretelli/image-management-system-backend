@@ -20,7 +20,6 @@ export class ImageController {
 
             const input: ImageInputDTO = {
                 subtitle: req.body.subtitle,
-                author: req.body.author,
                 date: new Date(req.body.date),
                 file: req.body.file,
                 tags: req.body.tags,
@@ -42,7 +41,7 @@ export class ImageController {
 
         try {
             const token = req.headers.authorization as string;
-            const id = req.params.id
+            const id = req.params.imageId
 
             const image = await ImageController.imageBusiness.getImageById(token, id);
 
@@ -75,7 +74,7 @@ export class ImageController {
 
         try {
             const token = req.headers.authorization as string;
-            const id = req.params.id
+            const id = req.params.imageId
 
             await ImageController.imageBusiness.delete(token, id);
 
