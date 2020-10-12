@@ -1,5 +1,6 @@
 import { BaseDatabase } from "./BaseDatabase";
 import { User } from "../model/User";
+import { ImageDatabase } from "./ImageDatabase";
 
 export class UserDatabase extends BaseDatabase {
 
@@ -37,25 +38,52 @@ export class UserDatabase extends BaseDatabase {
       return User.toUserModel(result[0]);
   }
 
-  public async getUserById(id: string): Promise<User> {
-    const result = await this.getConnection()
-      .select("*")
-      .from(UserDatabase.TABLE_NAME)
-      .where({ id });
+  public async getUserById(id: string): Promise<any> {
+    const result = await this.getConnection().raw(`
+      SELECT *
+      FROM ${UserDatabase.TABLE_NAME} u
+      WHERE u.id = "${id}"
+    `)
 
-    return User.toUserModel(result[0]);
+
+    const user:any = result[0][0] 
+
+    const imageDatabase = new ImageDatabase();
+    const images:any[] = await imageDatabase.getImagesFromUser(user.nickname)
+    
+    const profile: any = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      nickname: user.nickname,
+      images: images,
+    }
+
+    return profile;
   }
 
   public async getProfile(id: string): Promise<any> {
     const result = await this.getConnection().raw(`
       SELECT *
       FROM ${UserDatabase.TABLE_NAME} u
-      JOIN ${UserDatabase.TABLE_IMAGES} i
-      ON u.nickname = i.author
       WHERE u.id = "${id}"
     `)
 
-    return result[0][0];
+
+    const user:any = result[0][0] 
+
+    const imageDatabase = new ImageDatabase();
+    const images:any[] = await imageDatabase.getImagesFromUser(user.nickname)
+    
+    const profile: any = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      nickname: user.nickname,
+      images: images,
+    }
+
+    return profile;
   }
 
   public async deleteUser(id: string): Promise<void> {

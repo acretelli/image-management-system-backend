@@ -40,6 +40,15 @@ export class ImageDatabase extends BaseDatabase {
     return Image.toImageModel(result[0]);
   }
 
+  public async getImagesFromUser(author: string): Promise<any> {
+    const result = await this.getConnection()
+      .select("*")
+      .from(ImageDatabase.TABLE_NAME)
+      .where({ author });
+
+    return result;
+  }
+
   public async getAllImages(): Promise<Image[]> {
     const result = await this.getConnection()
       .select("*")
