@@ -1,9 +1,11 @@
 import { BaseDatabase } from "./BaseDatabase";
-import { Image } from "../model/Image";
+import { Image, SearchImageDTO } from "../model/Image";
 
 export class ImageDatabase extends BaseDatabase {
 
   private static TABLE_NAME = "image_management_images";
+  private static TABLE_COLLECTIONS = "image_management_collections";
+  private static TABLE_COLLECTIONS_RELATIONSHIPS = "image_management_collections_relationships";
 
   public async createImage(
     id: string,
@@ -11,8 +13,7 @@ export class ImageDatabase extends BaseDatabase {
     author: string,
     date: Date,
     file: string,
-    tags: string[],
-    collection: string
+    tags: string[]
   ): Promise<void> {
     try {
       await this.getConnection()
@@ -22,8 +23,7 @@ export class ImageDatabase extends BaseDatabase {
             author,
             date,
             file,
-            tags,
-            collection
+            tags
         })
         .into(ImageDatabase.TABLE_NAME);
     } catch (error) {
@@ -64,4 +64,29 @@ export class ImageDatabase extends BaseDatabase {
       .where({ id });
   }
 
+  public async addImageInCollection(id: string, image_id: string, collection_id: string): Promise<void> {
+    await this.getConnection()
+      .insert({
+        id,
+        image_id,
+        collection_id
+      })
+      .into(ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS);
+  }
+  
+  public async searchPost(searchData: SearchImageDTO): Promise<Image[]> {
+    const resultsPerPage: number = 5
+    const offset: number = resultsPerPage * (searchData.page - 1)
+
+    const result = await this.getConnection().raw(`
+      SELECT * FROM ${ImageDatabase.TABLE_NAME} i
+      WHERE i.subtitle LIKE "%${searchData.subtitle.toLocaleLowerCase()}%"
+      OR i.tags LIKE "%${searchData.tag.toLocaleLowerCase()}%"
+      ORDER BY i.${searchData.orderBy} ${searchData.orderType}
+      LIMIT ${resultsPerPage}
+      OFFSET ${offset}
+    `);
+    
+    return result[0];
+  }
 }

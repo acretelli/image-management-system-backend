@@ -17,3 +17,14 @@
 
 ### 5. Deletar item
 - Endpoint de deleção de itens. Método: delete.
+
+### 6. Criação de playlist ou coleção
+- Esta funcionalidade é quebrada em duas ações diferentes: **criar a coleção** e também **adicionar** **itens à lista**. Uma coleção precisa é guardada com o método `put` em `/collection`.
+- Para criar uma lista, precisaremos dos seguintes dados: id, title, subtitle, image?.
+- No outro endpoint, de adicionar um item, precisaremos dos seguintes dados: id.
+
+### 7. Deletar item de coleção
+- Endpoint de deleção de itens. Método: delete.
+
+### 8. Organização dos itens por critérios
+- As listas precisam ser buscadas com o método `get` em `/image`. 

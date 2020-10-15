@@ -1,6 +1,6 @@
 import { IdGenerator } from "../services/IdGenerator";
 import { Authenticator } from "../services/Authenticator";
-import { ImageInputDTO } from "../model/Image";
+import { Image, ImageInputDTO, SearchImageDTO } from "../model/Image";
 import { ImageDatabase } from "../data/ImageDatabase";
 import { InvalidParameterError } from "../error/InvalidParameterError";
 import { UnauthorizedError } from "../error/UnauthorizedError";
@@ -16,7 +16,7 @@ export class ImageBusiness {
 
     async createImage(token: string, image: ImageInputDTO) {
 
-        if (!image.subtitle || !image.date || !image.file || !image.tags || !image.collection) {
+        if (!image.subtitle || !image.date || !image.file || !image.tags) {
             throw new InvalidParameterError("Missing input.");
         }
 
@@ -30,7 +30,7 @@ export class ImageBusiness {
             throw new UnauthorizedError("You don't have permission to do that.");
         }
 
-        await this.imageDatabase.createImage(id, image.subtitle, user.nickname, image.date, image.file, image.tags, image.collection);
+        await this.imageDatabase.createImage(id, image.subtitle, user.nickname, image.date, image.file, image.tags);
 
         return accessToken;
     }
@@ -80,4 +80,46 @@ export class ImageBusiness {
         await this.imageDatabase.deleteImageById(id);
 
     }
+
+    async addImageInCollection(token: string, imageId: string, collectionId: string) {
+
+        if (!imageId || !collectionId) {
+            throw new InvalidParameterError("Missing input.");
+        }
+
+        const id = this.idGenerator.generate();
+        const accessToken = this.authenticator.getData(token);
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        await this.imageDatabase.addImageInCollection(id, imageId, collectionId);
+    }
+
+    public async searchImage(searchData: SearchImageDTO): Promise<Image[]> {
+        const validOrderByValues = ["date", "subtitle"]
+        const validOrderTypeValues = ["ASC", "DESC"]
+
+        if(!validOrderByValues.includes(searchData.orderBy)) {
+            throw new Error("Insert a valid order. It can be 'date' or 'subtitle'.")
+        }
+
+        if(!validOrderTypeValues.includes(searchData.orderType)) {
+            throw new Error("Insert a valid order. It can be 'ASC' or 'DESC'.")
+        }
+
+        if(searchData.page < 0) {
+            throw new Error("The page should be bigger than 0.")
+        }
+
+        const result = await this.imageDatabase.searchPost(searchData)
+
+        if(!result.length) {
+            throw new Error("No image was found. Go take some pictures")
+        }
+
+        return result
+    }
+
 }

@@ -5,8 +5,7 @@ export class Image{
     private author: string,
     private date: Date,
     private file: string,
-    private tags: string[],
-    private collection: string
+    private tags: string[]
     ){}
 
     getId(){
@@ -33,10 +32,6 @@ export class Image{
         return this.tags;
     }
 
-    getCollection(){
-        return this.collection;
-    }
-
     setId(){
         return this.id;
     }
@@ -61,12 +56,8 @@ export class Image{
         return this.tags;
     }
 
-    setCollection(){
-        return this.collection;
-    }
-
     static toImageModel(image: any): Image {
-        return new Image(image.id, image.subtitle, image.author, image.date, image.file, image.tags, image.collection);
+        return new Image(image.id, image.subtitle, image.author, image.date, image.file, image.tags);
     }
 }
 
@@ -74,6 +65,13 @@ export interface ImageInputDTO {
     subtitle: string,
     date: Date,
     file: string,
-    tags: string[],
-    collection: string
+    tags: string[]
+}
+
+export interface SearchImageDTO {
+    subtitle: string,
+    tag: string,
+    orderBy: string,
+    orderType: string,
+    page: number
 }
