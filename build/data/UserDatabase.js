@@ -174,7 +174,6 @@ var UserDatabase = (function (_super) {
                     case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + UserDatabase.TABLE_NAME + " u\n      WHERE u.name LIKE \"%" + name + "%\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        console.log(result);
                         user = result[0][0];
                         imageDatabase = new ImageDatabase_1.ImageDatabase();
                         return [4, imageDatabase.getImagesFromUser(user.nickname)];
