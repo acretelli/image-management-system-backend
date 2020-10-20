@@ -151,8 +151,6 @@ export class UserDatabase extends BaseDatabase {
     const relation: any = result[0][0]
     const following = await this.getUserById(relation.following_id)
 
-    console.log(following.nickname)
-
     const imageDatabase = new ImageDatabase();
     const images:any[] = await imageDatabase.getImagesFromUser(following.nickname)
   

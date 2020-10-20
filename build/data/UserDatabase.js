@@ -240,7 +240,6 @@ var UserDatabase = (function (_super) {
                         return [4, this.getUserById(relation.following_id)];
                     case 2:
                         following = _a.sent();
-                        console.log(following.nickname);
                         imageDatabase = new ImageDatabase_1.ImageDatabase();
                         return [4, imageDatabase.getImagesFromUser(following.nickname)];
                     case 3:
