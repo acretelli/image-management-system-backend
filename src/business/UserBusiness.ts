@@ -86,7 +86,6 @@ export class UserBusiness {
 
     async deleteUser(token: string) {
 
-
         if (!token) {
             throw new UnauthorizedError("You don't have permission to do that.");
         }
@@ -99,5 +98,58 @@ export class UserBusiness {
 
         await this.userDatabase.deleteUser(accessToken);
 
+    }
+
+    public async searchUser(token: string, name: string): Promise<any> {
+        
+        if (!token) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        if (!name) {
+            throw new InvalidParameterError("Missing input.");
+        }
+    
+        const result = await this.userDatabase.searchUser(name)
+        return result
+    }
+
+    public async followUser(token: string, following_id: string): Promise<any> {
+        
+        if (!token) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        if (!following_id) {
+            throw new InvalidParameterError("Missing input.");
+        }
+
+        const accessToken = this.authenticator.getData(token).id;
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const alreadyFollow = await this.userDatabase.checkIfFollows(accessToken, following_id)
+
+        if (alreadyFollow) {
+            throw new UnauthorizedError("You already follow this user.");
+        }
+
+        const id = this.idGenerator.generate();
+
+        await this.userDatabase.followUser(id, accessToken, following_id)
+    }
+
+    public async getUserFeed(token: string): Promise<any> {
+        
+        if (!token) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const accessToken = this.authenticator.getData(token).id;
+
+        const result = await this.userDatabase.getUserFeed(accessToken)
+        return result
     }
 }

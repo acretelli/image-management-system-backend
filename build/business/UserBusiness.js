@@ -155,6 +155,75 @@ var UserBusiness = (function () {
             });
         });
     };
+    UserBusiness.prototype.searchUser = function (token, name) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!token) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        if (!name) {
+                            throw new InvalidParameterError_1.InvalidParameterError("Missing input.");
+                        }
+                        return [4, this.userDatabase.searchUser(name)];
+                    case 1:
+                        result = _a.sent();
+                        return [2, result];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.followUser = function (token, following_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, alreadyFollow, id;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!token) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        if (!following_id) {
+                            throw new InvalidParameterError_1.InvalidParameterError("Missing input.");
+                        }
+                        accessToken = this.authenticator.getData(token).id;
+                        if (!accessToken) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        return [4, this.userDatabase.checkIfFollows(accessToken, following_id)];
+                    case 1:
+                        alreadyFollow = _a.sent();
+                        if (alreadyFollow) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You already follow this user.");
+                        }
+                        id = this.idGenerator.generate();
+                        return [4, this.userDatabase.followUser(id, accessToken, following_id)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.getUserFeed = function (token) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!token) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        accessToken = this.authenticator.getData(token).id;
+                        return [4, this.userDatabase.getUserFeed(accessToken)];
+                    case 1:
+                        result = _a.sent();
+                        return [2, result];
+                }
+            });
+        });
+    };
     return UserBusiness;
 }());
 exports.UserBusiness = UserBusiness;

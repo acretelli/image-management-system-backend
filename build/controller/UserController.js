@@ -45,6 +45,78 @@ var HashManager_1 = require("../services/HashManager");
 var Authenticator_1 = require("../services/Authenticator");
 var UserController = (function () {
     function UserController() {
+        var _this = this;
+        this.searchUser = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var token, name_1, result, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        token = req.headers.authorization;
+                        name_1 = req.query.name;
+                        return [4, UserController.userBusiness.searchUser(token, name_1)];
+                    case 1:
+                        result = _a.sent();
+                        res.status(200).send(result);
+                        return [3, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        res.status(400).send(err_1.message);
+                        return [3, 3];
+                    case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
+                    case 4:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        }); };
+        this.followUser = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var token, followingId, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        token = req.headers.authorization;
+                        followingId = req.params.id;
+                        return [4, UserController.userBusiness.followUser(token, followingId)];
+                    case 1:
+                        _a.sent();
+                        res.status(200).send({ message: "You're now following this user." });
+                        return [3, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        res.status(400).send(err_2.message);
+                        return [3, 3];
+                    case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
+                    case 4:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        }); };
+        this.getUserFeed = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var token, result, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        token = req.headers.authorization;
+                        return [4, UserController.userBusiness.getUserFeed(token)];
+                    case 1:
+                        result = _a.sent();
+                        res.status(200).send(result);
+                        return [3, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        res.status(400).send(err_3.message);
+                        return [3, 3];
+                    case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
+                    case 4:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        }); };
     }
     UserController.prototype.signup = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {

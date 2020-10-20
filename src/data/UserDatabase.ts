@@ -5,7 +5,7 @@ import { ImageDatabase } from "./ImageDatabase";
 export class UserDatabase extends BaseDatabase {
 
   private static TABLE_NAME = "image_management_users";
-  private static TABLE_IMAGES = "image_management_images";
+  private static TABLE_FOLLOW = "image_management_users_following";
 
   public async createUser(
     id: string,
@@ -92,5 +92,70 @@ export class UserDatabase extends BaseDatabase {
       .from(UserDatabase.TABLE_NAME)
       .where({ id });
   }
+  
+  public async searchUser(name: string): Promise<any> {
+    const result = await this.getConnection().raw(`
+      SELECT *
+      FROM ${UserDatabase.TABLE_NAME} u
+      WHERE u.name LIKE "%${name}%"
+    `);
 
+    const user: any = result[0][0]
+    
+    const imageDatabase = new ImageDatabase();
+    const images:any[] = await imageDatabase.getImagesFromUser(user.nickname)
+    
+    const profile: any = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      nickname: user.nickname,
+      images: images,
+    }
+
+    return profile;
+  }
+
+  public async followUser(id: string, user_id: string, following_id: string): Promise<void> {
+    await this.getConnection()
+        .insert({
+          id,
+          user_id,
+          following_id
+        })
+        .into(UserDatabase.TABLE_FOLLOW);
+  }
+
+  public async checkIfFollows(user_id: string, following_id: string): Promise<boolean> {
+    const result = await this.getConnection().raw(`
+      SELECT *
+      FROM ${UserDatabase.TABLE_FOLLOW} f
+      WHERE f.user_id = "${user_id}" 
+      AND f.following_id = "${following_id}"  
+    `);
+    
+    if(result) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  public async getUserFeed(user_id: string): Promise<any> {
+    const result = await this.getConnection().raw(`
+      SELECT *
+      FROM ${UserDatabase.TABLE_FOLLOW} f
+      WHERE f.user_id = "${user_id}" 
+    `);
+
+    const relation: any = result[0][0]
+    const following = await this.getUserById(relation.following_id)
+
+    console.log(following.nickname)
+
+    const imageDatabase = new ImageDatabase();
+    const images:any[] = await imageDatabase.getImagesFromUser(following.nickname)
+  
+    return images;
+  }
 }

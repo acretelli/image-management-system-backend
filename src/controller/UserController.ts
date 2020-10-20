@@ -108,4 +108,48 @@ export class UserController {
         await BaseDatabase.destroyConnection();
     }
 
+    public searchUser = async(req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string;
+            const name: string = req.query.name as string;
+
+            const result = await UserController.userBusiness.searchUser(token, name);
+
+            res.status(200).send(result)
+        } catch (err) {
+            res.status(400).send(err.message)
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
+    public followUser = async(req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string;
+            const followingId: string = req.params.id;
+
+            await UserController.userBusiness.followUser(token, followingId);
+
+            res.status(200).send({ message: "You're now following this user." })
+        } catch (err) {
+            res.status(400).send(err.message)
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
+    public getUserFeed = async(req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string;
+
+            const result = await UserController.userBusiness.getUserFeed(token);
+
+            res.status(200).send(result)
+        } catch (err) {
+            res.status(400).send(err.message)
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
 }

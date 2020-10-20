@@ -12,5 +12,8 @@ exports.userRouter.post("/signup", userController.signup);
 exports.userRouter.post("/login", userController.login);
 exports.userRouter.get("/profile", userController.getProfile);
 exports.userRouter.delete("/delete", userController.deleteUser);
+exports.userRouter.get("/search", userController.searchUser);
+exports.userRouter.get("/feed", userController.getUserFeed);
 exports.userRouter.get("/:id", userController.getUserById);
+exports.userRouter.post("/:id/follow", userController.followUser);
 //# sourceMappingURL=userRouter.js.map

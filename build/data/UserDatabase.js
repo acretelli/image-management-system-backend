@@ -166,8 +166,93 @@ var UserDatabase = (function (_super) {
             });
         });
     };
+    UserDatabase.prototype.searchUser = function (name) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, user, imageDatabase, images, profile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + UserDatabase.TABLE_NAME + " u\n      WHERE u.name LIKE \"%" + name + "%\"\n    ")];
+                    case 1:
+                        result = _a.sent();
+                        console.log(result);
+                        user = result[0][0];
+                        imageDatabase = new ImageDatabase_1.ImageDatabase();
+                        return [4, imageDatabase.getImagesFromUser(user.nickname)];
+                    case 2:
+                        images = _a.sent();
+                        profile = {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            nickname: user.nickname,
+                            images: images,
+                        };
+                        return [2, profile];
+                }
+            });
+        });
+    };
+    UserDatabase.prototype.followUser = function (id, user_id, following_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection()
+                            .insert({
+                            id: id,
+                            user_id: user_id,
+                            following_id: following_id
+                        })
+                            .into(UserDatabase.TABLE_FOLLOW)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    UserDatabase.prototype.checkIfFollows = function (user_id, following_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + UserDatabase.TABLE_FOLLOW + " f\n      WHERE f.user_id = \"" + user_id + "\" \n      AND f.following_id = \"" + following_id + "\"  \n    ")];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            return [2, true];
+                        }
+                        else {
+                            return [2, false];
+                        }
+                        return [2];
+                }
+            });
+        });
+    };
+    UserDatabase.prototype.getUserFeed = function (user_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, relation, following, imageDatabase, images;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + UserDatabase.TABLE_FOLLOW + " f\n      WHERE f.user_id = \"" + user_id + "\" \n    ")];
+                    case 1:
+                        result = _a.sent();
+                        relation = result[0][0];
+                        return [4, this.getUserById(relation.following_id)];
+                    case 2:
+                        following = _a.sent();
+                        console.log(following.nickname);
+                        imageDatabase = new ImageDatabase_1.ImageDatabase();
+                        return [4, imageDatabase.getImagesFromUser(following.nickname)];
+                    case 3:
+                        images = _a.sent();
+                        return [2, images];
+                }
+            });
+        });
+    };
     UserDatabase.TABLE_NAME = "image_management_users";
-    UserDatabase.TABLE_IMAGES = "image_management_images";
+    UserDatabase.TABLE_FOLLOW = "image_management_users_following";
     return UserDatabase;
 }(BaseDatabase_1.BaseDatabase));
 exports.UserDatabase = UserDatabase;
