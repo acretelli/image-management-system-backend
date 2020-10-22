@@ -12,7 +12,7 @@
 
 ### 1.3 Perfil de usuários
 - O perfil de usuário é buscado com o método `get` em `/user/:id`. O perfil do usuário logado com o método `get` em `/user/profile`.
-- Ao buscar o perfil do usuário, o retorno da busca é um array com suas coleções de músicas ou imagens.
+- Ao buscar o perfil do usuário, o retorno da busca é um array com suas coleções de imagens.
 
 ### 1.4 Seguir e ser seguido
 - Para seguir um usuário, basta enviar seu `id` no body de um método `put`.
@@ -25,7 +25,7 @@
 ## 2. Imagens
 
 ### 2.1 Criação de música ou imagem
-- Uma imagem recebe as informações de id, subtitle, author, date, file, tags e collection. O endpoint de criação deve ser autenticado. Método: post.
+- Uma imagem recebe as informações de id, subtitle, author, date, file e tags. O endpoint de criação deve ser autenticado. Método: post.
 
 ### 2.2 Leitura de música ou imagem
 - O endpoint de leitura deve ser autenticado, recebendo o token do usuário. Método: get.
