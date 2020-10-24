@@ -4,6 +4,7 @@ import { Image, SearchImageDTO } from "../model/Image";
 export class ImageDatabase extends BaseDatabase {
 
   private static TABLE_NAME = "image_management_images";
+  private static TABLE_USERS = "image_management_users";
   private static TABLE_COLLECTIONS = "image_management_collections";
   private static TABLE_COLLECTIONS_RELATIONSHIPS = "image_management_collections_relationships";
 
@@ -32,10 +33,13 @@ export class ImageDatabase extends BaseDatabase {
   }
 
   public async getImageById(id: string): Promise<Image> {
-    const result = await this.getConnection()
-      .select("*")
-      .from(ImageDatabase.TABLE_NAME)
-      .where({ id });
+    const result = await this.getConnection().raw(`
+      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags, u.id as user_id
+      FROM ${ImageDatabase.TABLE_NAME} i
+      JOIN ${ImageDatabase.TABLE_USERS} u
+      ON i.author = u.nickname
+      WHERE id = "${id}"
+    `)
 
     return Image.toImageModel(result[0]);
   }
