@@ -1,4 +1,4 @@
-# Projeto de sistema de gerenciamento de imagens (backend)
+# Projeto de sistema de gerenciamento de imagens (backend) - em produção
 
 ## 1. Usuários
 

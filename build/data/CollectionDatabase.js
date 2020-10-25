@@ -50,7 +50,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CollectionDatabase = void 0;
-var Collection_1 = require("../model/Collection");
 var BaseDatabase_1 = require("./BaseDatabase");
 var CollectionDatabase = (function (_super) {
     __extends(CollectionDatabase, _super);
@@ -85,16 +84,14 @@ var CollectionDatabase = (function (_super) {
     };
     CollectionDatabase.prototype.getCollectionById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result;
+            var result, collection;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.getConnection()
-                            .select("*")
-                            .from(CollectionDatabase.TABLE_NAME)
-                            .where({ id: id })];
+                    case 0: return [4, this.getConnection().raw("\n      SELECT c.*, r.collection_id, r.image_id\n      FROM " + CollectionDatabase.TABLE_NAME + " c\n      JOIN " + CollectionDatabase.TABLE_RELATIONS + " r\n      ON c.id = r.collection_id\n      WHERE c.id = \"" + id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        return [2, Collection_1.Collection.toCollectionModel(result[0])];
+                        collection = result[0];
+                        return [2, collection];
                 }
             });
         });
@@ -145,7 +142,23 @@ var CollectionDatabase = (function (_super) {
             });
         });
     };
+    CollectionDatabase.prototype.deleteImageFromCollections = function (image_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection()
+                            .del()
+                            .from(CollectionDatabase.TABLE_RELATIONS)
+                            .where({ image_id: image_id })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     CollectionDatabase.TABLE_NAME = "image_management_collections";
+    CollectionDatabase.TABLE_RELATIONS = "image_management_collections_relationships";
     return CollectionDatabase;
 }(BaseDatabase_1.BaseDatabase));
 exports.CollectionDatabase = CollectionDatabase;

@@ -10,6 +10,7 @@ exports.collectionRouter = express_1.default.Router();
 var collectionController = new CollectionController_1.CollectionController();
 exports.collectionRouter.put("/add", collectionController.createCollection);
 exports.collectionRouter.get("/all", collectionController.getAllCollections);
-exports.collectionRouter.delete("/delete", collectionController.deleteCollection);
 exports.collectionRouter.get("/:collectionId", collectionController.getCollectionById);
+exports.collectionRouter.delete("/:collectionId/delete", collectionController.deleteCollection);
+exports.collectionRouter.delete("/:collectionId/removeImage", collectionController.deleteImageFromCollection);
 //# sourceMappingURL=collectionRouter.js.map

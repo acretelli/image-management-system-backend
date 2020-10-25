@@ -90,10 +90,7 @@ var ImageDatabase = (function (_super) {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.getConnection()
-                            .select("*")
-                            .from(ImageDatabase.TABLE_NAME)
-                            .where({ id: id })];
+                    case 0: return [4, this.getConnection().raw("\n      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags, u.id as user_id\n      FROM " + ImageDatabase.TABLE_NAME + " i\n      JOIN " + ImageDatabase.TABLE_USERS + " u\n      ON i.author = u.nickname\n      WHERE id = \"" + id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
                         return [2, Image_1.Image.toImageModel(result[0])];
@@ -182,6 +179,7 @@ var ImageDatabase = (function (_super) {
         });
     };
     ImageDatabase.TABLE_NAME = "image_management_images";
+    ImageDatabase.TABLE_USERS = "image_management_users";
     ImageDatabase.TABLE_COLLECTIONS = "image_management_collections";
     ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS = "image_management_collections_relationships";
     return ImageDatabase;

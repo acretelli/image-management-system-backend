@@ -121,6 +121,24 @@ var CollectionBusiness = (function () {
             });
         });
     };
+    CollectionBusiness.prototype.deleteImageFromCollection = function (token, image_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        accessToken = this.authenticator.getData(token);
+                        if (!accessToken) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        return [4, this.collectionDatabase.deleteImageFromCollections(image_id)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     return CollectionBusiness;
 }());
 exports.CollectionBusiness = CollectionBusiness;

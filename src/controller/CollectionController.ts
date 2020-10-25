@@ -85,4 +85,21 @@ export class CollectionController {
         await BaseDatabase.destroyConnection();
     }
 
+    async deleteImageFromCollection(req: Request, res: Response) {
+
+        try {
+            const token = req.headers.authorization as string;
+            const image_id = req.body.image_id
+
+            await CollectionController.collectionBusiness.deleteImageFromCollection(token, image_id);
+
+            res.status(200).send({ message: "Image removed from collection successfully" });
+
+        } catch (error) {
+            res.status(400).send({ error: error.message });
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
 }

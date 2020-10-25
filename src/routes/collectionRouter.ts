@@ -7,5 +7,6 @@ const collectionController = new CollectionController();
 
 collectionRouter.put("/add", collectionController.createCollection);
 collectionRouter.get("/all", collectionController.getAllCollections);
-collectionRouter.delete("/delete", collectionController.deleteCollection);
 collectionRouter.get("/:collectionId", collectionController.getCollectionById);
+collectionRouter.delete("/:collectionId/delete", collectionController.deleteCollection);
+collectionRouter.delete("/:collectionId/removeImage", collectionController.deleteImageFromCollection);

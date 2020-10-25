@@ -68,4 +68,16 @@ export class CollectionBusiness {
         await this.collectionDatabase.deleteCollectionById(id);
 
     }
+
+    async deleteImageFromCollection(token: string, image_id: string) {
+
+        const accessToken = this.authenticator.getData(token);
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        await this.collectionDatabase.deleteImageFromCollections(image_id);
+
+    }
 }
