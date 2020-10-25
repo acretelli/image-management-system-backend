@@ -38,7 +38,7 @@ export class ImageDatabase extends BaseDatabase {
       FROM ${ImageDatabase.TABLE_NAME} i
       JOIN ${ImageDatabase.TABLE_USERS} u
       ON i.author = u.nickname
-      WHERE id = "${id}"
+      WHERE i.id = "${id}"
     `)
 
     return Image.toImageModel(result[0]);
