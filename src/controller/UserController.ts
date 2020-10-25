@@ -138,6 +138,21 @@ export class UserController {
         await BaseDatabase.destroyConnection();
     }
 
+    public unfollowUser = async(req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string;
+            const followingId: string = req.params.id;
+
+            await UserController.userBusiness.unfollowUser(token, followingId);
+
+            res.status(200).send({ message: "You're not following this suser anymore." })
+        } catch (err) {
+            res.status(400).send(err.message)
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
     public getUserFeed = async(req: Request, res: Response) => {
         try {
             const token = req.headers.authorization as string;

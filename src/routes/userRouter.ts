@@ -15,3 +15,4 @@ userRouter.get("/feed", userController.getUserFeed);
 userRouter.put("/upload", new FileController().fileUpload);
 userRouter.get("/:id", userController.getUserById);
 userRouter.post("/:id/follow", userController.followUser);
+userRouter.delete("/:id/unfollow", userController.unfollowUser);

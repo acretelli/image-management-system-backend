@@ -206,6 +206,36 @@ var UserBusiness = (function () {
             });
         });
     };
+    UserBusiness.prototype.unfollowUser = function (token, following_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, alreadyFollow;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!token) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        if (!following_id) {
+                            throw new InvalidParameterError_1.InvalidParameterError("Missing input.");
+                        }
+                        accessToken = this.authenticator.getData(token).id;
+                        if (!accessToken) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        return [4, this.userDatabase.checkIfFollows(accessToken, following_id)];
+                    case 1:
+                        alreadyFollow = _a.sent();
+                        if (!alreadyFollow) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't follow this user.");
+                        }
+                        return [4, this.userDatabase.unfollowUser(following_id)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     UserBusiness.prototype.getUserFeed = function (token) {
         return __awaiter(this, void 0, void 0, function () {
             var accessToken, result;

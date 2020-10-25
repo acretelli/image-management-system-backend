@@ -209,6 +209,21 @@ var UserDatabase = (function (_super) {
             });
         });
     };
+    UserDatabase.prototype.unfollowUser = function (following_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection()
+                            .del()
+                            .from(UserDatabase.TABLE_FOLLOW)
+                            .where({ following_id: following_id })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     UserDatabase.prototype.checkIfFollows = function (user_id, following_id) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
@@ -217,7 +232,7 @@ var UserDatabase = (function (_super) {
                     case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + UserDatabase.TABLE_FOLLOW + " f\n      WHERE f.user_id = \"" + user_id + "\" \n      AND f.following_id = \"" + following_id + "\"  \n    ")];
                     case 1:
                         result = _a.sent();
-                        if (result) {
+                        if (result[0][0]) {
                             return [2, true];
                         }
                         else {

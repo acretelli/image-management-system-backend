@@ -141,6 +141,31 @@ export class UserBusiness {
         await this.userDatabase.followUser(id, accessToken, following_id)
     }
 
+    public async unfollowUser(token: string, following_id: string): Promise<any> {
+        
+        if (!token) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        if (!following_id) {
+            throw new InvalidParameterError("Missing input.");
+        }
+
+        const accessToken = this.authenticator.getData(token).id;
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const alreadyFollow = await this.userDatabase.checkIfFollows(accessToken, following_id)
+
+        if (!alreadyFollow) {
+            throw new UnauthorizedError("You don't follow this user.");
+        }
+
+        await this.userDatabase.unfollowUser(following_id)
+    }
+
     public async getUserFeed(token: string): Promise<any> {
         
         if (!token) {

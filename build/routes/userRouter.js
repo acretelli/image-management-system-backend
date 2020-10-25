@@ -18,4 +18,5 @@ exports.userRouter.get("/feed", userController.getUserFeed);
 exports.userRouter.put("/upload", new FileController_1.FileController().fileUpload);
 exports.userRouter.get("/:id", userController.getUserById);
 exports.userRouter.post("/:id/follow", userController.followUser);
+exports.userRouter.delete("/:id/unfollow", userController.unfollowUser);
 //# sourceMappingURL=userRouter.js.map

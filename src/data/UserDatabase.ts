@@ -126,6 +126,13 @@ export class UserDatabase extends BaseDatabase {
         .into(UserDatabase.TABLE_FOLLOW);
   }
 
+  public async unfollowUser(following_id: string): Promise<void> {
+    await this.getConnection()
+        .del()
+        .from(UserDatabase.TABLE_FOLLOW)
+        .where({ following_id });
+  }
+
   public async checkIfFollows(user_id: string, following_id: string): Promise<boolean> {
     const result = await this.getConnection().raw(`
       SELECT *
@@ -134,7 +141,7 @@ export class UserDatabase extends BaseDatabase {
       AND f.following_id = "${following_id}"  
     `);
     
-    if(result) {
+    if(result[0][0]) {
       return true
     } else {
       return false

@@ -94,8 +94,32 @@ var UserController = (function () {
                 }
             });
         }); };
+        this.unfollowUser = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+            var token, followingId, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        token = req.headers.authorization;
+                        followingId = req.params.id;
+                        return [4, UserController.userBusiness.unfollowUser(token, followingId)];
+                    case 1:
+                        _a.sent();
+                        res.status(200).send({ message: "You're not following this suser anymore." });
+                        return [3, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        res.status(400).send(err_3.message);
+                        return [3, 3];
+                    case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
+                    case 4:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        }); };
         this.getUserFeed = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-            var token, result, err_3;
+            var token, result, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -107,8 +131,8 @@ var UserController = (function () {
                         res.status(200).send(result);
                         return [3, 3];
                     case 2:
-                        err_3 = _a.sent();
-                        res.status(400).send(err_3.message);
+                        err_4 = _a.sent();
+                        res.status(400).send(err_4.message);
                         return [3, 3];
                     case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
                     case 4:
