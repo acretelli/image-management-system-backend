@@ -32,7 +32,7 @@ export class ImageDatabase extends BaseDatabase {
     }
   }
 
-  public async getImageById(id: string): Promise<Image> {
+  public async getImageById(id: string): Promise<any> {
     const result = await this.getConnection().raw(`
       SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags, u.id as user_id
       FROM ${ImageDatabase.TABLE_NAME} i
@@ -41,7 +41,7 @@ export class ImageDatabase extends BaseDatabase {
       WHERE i.id = "${id}"
     `)
 
-    return Image.toImageModel(result[0]);
+    return result[0];
   }
 
   public async getImagesFromUser(author: string): Promise<any> {
