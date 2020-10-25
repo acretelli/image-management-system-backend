@@ -51,7 +51,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageDatabase = void 0;
 var BaseDatabase_1 = require("./BaseDatabase");
-var Image_1 = require("../model/Image");
 var ImageDatabase = (function (_super) {
     __extends(ImageDatabase, _super);
     function ImageDatabase() {
@@ -93,7 +92,7 @@ var ImageDatabase = (function (_super) {
                     case 0: return [4, this.getConnection().raw("\n      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags, u.id as user_id\n      FROM " + ImageDatabase.TABLE_NAME + " i\n      JOIN " + ImageDatabase.TABLE_USERS + " u\n      ON i.author = u.nickname\n      WHERE i.id = \"" + id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        return [2, Image_1.Image.toImageModel(result[0])];
+                        return [2, result[0]];
                 }
             });
         });
