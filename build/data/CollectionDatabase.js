@@ -84,14 +84,25 @@ var CollectionDatabase = (function (_super) {
     };
     CollectionDatabase.prototype.getCollectionById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, collection;
+            var result, collection, resultImages, images, collectionWithImages;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.getConnection().raw("\n      SELECT c.*, r.collection_id, r.image_id\n      FROM " + CollectionDatabase.TABLE_NAME + " c\n      JOIN " + CollectionDatabase.TABLE_RELATIONS + " r\n      ON c.id = r.collection_id\n      WHERE c.id = \"" + id + "\"\n    ")];
+                    case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + CollectionDatabase.TABLE_NAME + "\n      WHERE id = \"" + id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        collection = result[0];
-                        return [2, collection];
+                        collection = result[0][0];
+                        return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + CollectionDatabase.TABLE_RELATIONS + " r\n      JOIN " + CollectionDatabase.TABLE_IMAGES + " i\n      ON i.id = r.image_id\n      WHERE r.collection_id = \"" + id + "\"  \n    ")];
+                    case 2:
+                        resultImages = _a.sent();
+                        images = resultImages[0];
+                        collectionWithImages = {
+                            id: collection.id,
+                            title: collection.title,
+                            subtitle: collection.subtitle,
+                            image: collection.image,
+                            images: images,
+                        };
+                        return [2, collectionWithImages];
                 }
             });
         });
@@ -159,6 +170,7 @@ var CollectionDatabase = (function (_super) {
     };
     CollectionDatabase.TABLE_NAME = "image_management_collections";
     CollectionDatabase.TABLE_RELATIONS = "image_management_collections_relationships";
+    CollectionDatabase.TABLE_IMAGES = "image_management_images";
     return CollectionDatabase;
 }(BaseDatabase_1.BaseDatabase));
 exports.CollectionDatabase = CollectionDatabase;
