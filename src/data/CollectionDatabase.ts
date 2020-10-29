@@ -1,11 +1,11 @@
 import { Collection } from "../model/Collection";
 import { BaseDatabase } from "./BaseDatabase";
-import { ImageDatabase } from "./ImageDatabase";
 
 export class CollectionDatabase extends BaseDatabase {
 
   private static TABLE_NAME = "image_management_collections";
   private static TABLE_RELATIONS = "image_management_collections_relationships";
+  private static TABLE_IMAGES = "image_management_images";
 
   public async createCollection(
     id: string,
@@ -29,17 +29,33 @@ export class CollectionDatabase extends BaseDatabase {
 
   public async getCollectionById(id: string): Promise<any> {
     const result = await this.getConnection().raw(`
-      SELECT c.*, r.collection_id, r.image_id
-      FROM ${CollectionDatabase.TABLE_NAME} c
-      JOIN ${CollectionDatabase.TABLE_RELATIONS} r
-      ON c.id = r.collection_id
-      WHERE c.id = "${id}"
+      SELECT *
+      FROM ${CollectionDatabase.TABLE_NAME}
+      WHERE id = "${id}"
     `);
 
-    const collection: any = result[0]
-    
+    const collection = result[0][0]
 
-    return collection;
+    const resultImages = await this.getConnection().raw(`
+      SELECT *
+      FROM ${CollectionDatabase.TABLE_RELATIONS} r
+      JOIN ${CollectionDatabase.TABLE_IMAGES} i
+      ON i.id = r.image_id
+      WHERE r.collection_id = "${id}"  
+    `)
+
+    const images = resultImages[0];
+
+    const collectionWithImages: any = {
+      id: collection.id,
+      title: collection.title,
+      subtitle: collection.subtitle,
+      image: collection.image,
+      images: images,
+    }
+
+    
+    return collectionWithImages;
   }
 
   public async getCollectionsFromUser(author: string): Promise<any> {

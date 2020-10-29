@@ -77,7 +77,7 @@ export class ImageDatabase extends BaseDatabase {
       })
       .into(ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS);
   }
-  
+
   public async searchPost(searchData: SearchImageDTO): Promise<Image[]> {
     const resultsPerPage: number = 5
     const offset: number = resultsPerPage * (searchData.page - 1)
