@@ -41,7 +41,7 @@ export class ImageDatabase extends BaseDatabase {
       WHERE i.id = "${id}"
     `)
 
-    return result[0];
+    return result[0][0];
   }
 
   public async getImagesFromUser(author: string): Promise<any> {

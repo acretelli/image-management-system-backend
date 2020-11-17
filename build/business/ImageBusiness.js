@@ -40,6 +40,7 @@ exports.ImageBusiness = void 0;
 var InvalidParameterError_1 = require("../error/InvalidParameterError");
 var UnauthorizedError_1 = require("../error/UnauthorizedError");
 var UserDatabase_1 = require("../data/UserDatabase");
+var CollectionDatabase_1 = require("../data/CollectionDatabase");
 var ImageBusiness = (function () {
     function ImageBusiness(imageDatabase, idGenerator, authenticator) {
         this.imageDatabase = imageDatabase;
@@ -108,34 +109,6 @@ var ImageBusiness = (function () {
             });
         });
     };
-    ImageBusiness.prototype.delete = function (token, id) {
-        return __awaiter(this, void 0, void 0, function () {
-            var accessToken, userDatabase, user, image;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        accessToken = this.authenticator.getData(token);
-                        if (!accessToken) {
-                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
-                        }
-                        userDatabase = new UserDatabase_1.UserDatabase();
-                        return [4, userDatabase.getProfile(accessToken.id)];
-                    case 1:
-                        user = _a.sent();
-                        return [4, this.imageDatabase.getImageById(id)];
-                    case 2:
-                        image = _a.sent();
-                        if (user.nickname !== image.getAuthor()) {
-                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
-                        }
-                        return [4, this.imageDatabase.deleteImageById(id)];
-                    case 3:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
     ImageBusiness.prototype.addImageInCollection = function (token, imageId, collectionId) {
         return __awaiter(this, void 0, void 0, function () {
             var id, accessToken;
@@ -182,6 +155,38 @@ var ImageBusiness = (function () {
                             throw new Error("No image was found. Go take some pictures");
                         }
                         return [2, result];
+                }
+            });
+        });
+    };
+    ImageBusiness.prototype.deleteImage = function (token, id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken, userDatabase, user, image, collection;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        accessToken = this.authenticator.getData(token);
+                        if (!accessToken) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        userDatabase = new UserDatabase_1.UserDatabase();
+                        return [4, userDatabase.getProfile(accessToken.id)];
+                    case 1:
+                        user = _a.sent();
+                        return [4, this.imageDatabase.getImageById(id)];
+                    case 2:
+                        image = _a.sent();
+                        if (user.nickname !== image.author) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        collection = new CollectionDatabase_1.CollectionDatabase();
+                        return [4, collection.deleteImageFromCollections(id)];
+                    case 3:
+                        _a.sent();
+                        return [4, this.imageDatabase.deleteImageById(id)];
+                    case 4:
+                        _a.sent();
+                        return [2];
                 }
             });
         });

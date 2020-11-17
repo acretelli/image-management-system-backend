@@ -75,7 +75,7 @@ export class ImageController {
             const token = req.headers.authorization as string;
             const id = req.params.imageId
 
-            await ImageController.imageBusiness.delete(token, id);
+            await ImageController.imageBusiness.deleteImage(token, id);
 
             res.status(200).send({ message: "Image deleted successfully" });
 

@@ -62,9 +62,15 @@ export class UserBusiness {
             throw new UnauthorizedError("You don't have permission to do that.");
         }
 
+        const following = await this.userDatabase.checkIfFollows(accessToken.id, id);
+
+
         const userFromDB = await this.userDatabase.getUserById(id);
 
-        return userFromDB;
+        return {
+            user: userFromDB,
+            following: following
+        };
     }
 
     async getProfile(token: string) {
@@ -82,22 +88,6 @@ export class UserBusiness {
         const userFromDB = await this.userDatabase.getProfile(accessToken);
 
         return userFromDB;
-    }
-
-    async deleteUser(token: string) {
-
-        if (!token) {
-            throw new UnauthorizedError("You don't have permission to do that.");
-        }
-
-        const accessToken = this.authenticator.getData(token).id;
-
-        if (!accessToken) {
-            throw new UnauthorizedError("You don't have permission to do that.");
-        }
-
-        await this.userDatabase.deleteUser(accessToken);
-
     }
 
     public async searchUser(token: string, name: string): Promise<any> {
@@ -176,5 +166,21 @@ export class UserBusiness {
 
         const result = await this.userDatabase.getUserFeed(accessToken)
         return result
+    }
+
+    async deleteUser(token: string) {
+
+        if (!token) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const accessToken = this.authenticator.getData(token).id;
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        await this.userDatabase.deleteUser(accessToken);
+
     }
 }

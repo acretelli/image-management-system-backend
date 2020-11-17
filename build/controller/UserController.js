@@ -105,7 +105,7 @@ var UserController = (function () {
                         return [4, UserController.userBusiness.unfollowUser(token, followingId)];
                     case 1:
                         _a.sent();
-                        res.status(200).send({ message: "You're not following this suser anymore." });
+                        res.status(200).send({ message: "You're not following this user anymore." });
                         return [3, 3];
                     case 2:
                         err_3 = _a.sent();

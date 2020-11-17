@@ -5,6 +5,8 @@ import { ImageDatabase } from "../data/ImageDatabase";
 import { InvalidParameterError } from "../error/InvalidParameterError";
 import { UnauthorizedError } from "../error/UnauthorizedError";
 import { UserDatabase } from "../data/UserDatabase";
+import { CollectionBusiness } from "./CollectionBusiness";
+import { CollectionDatabase } from "../data/CollectionDatabase";
 
 export class ImageBusiness {
 
@@ -60,27 +62,6 @@ export class ImageBusiness {
         return imageFromDB;
     }
 
-    async delete(token: string, id: string) {
-
-        const accessToken = this.authenticator.getData(token);
-
-        if (!accessToken) {
-            throw new UnauthorizedError("You don't have permission to do that.");
-        }
-
-        const userDatabase = new UserDatabase();
-        const user = await userDatabase.getProfile(accessToken.id)
-
-        const image = await this.imageDatabase.getImageById(id)
-
-        if(user.nickname !== image.getAuthor()) {
-            throw new UnauthorizedError("You don't have permission to do that.");
-        }
-
-        await this.imageDatabase.deleteImageById(id);
-
-    }
-
     async addImageInCollection(token: string, imageId: string, collectionId: string) {
 
         if (!imageId || !collectionId) {
@@ -120,6 +101,30 @@ export class ImageBusiness {
         }
 
         return result
+    }
+
+    async deleteImage(token: string, id: string) {
+
+        const accessToken = this.authenticator.getData(token);
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const userDatabase = new UserDatabase();
+        const user = await userDatabase.getProfile(accessToken.id)
+
+        const image = await this.imageDatabase.getImageById(id)
+        
+        if(user.nickname !== image.author) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const collection = new CollectionDatabase();
+        await collection.deleteImageFromCollections(id);
+
+        await this.imageDatabase.deleteImageById(id);
+
     }
 
 }

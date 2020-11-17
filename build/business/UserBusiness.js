@@ -97,7 +97,7 @@ var UserBusiness = (function () {
     };
     UserBusiness.prototype.getUserById = function (token, id) {
         return __awaiter(this, void 0, void 0, function () {
-            var accessToken, userFromDB;
+            var accessToken, following, userFromDB;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -105,10 +105,16 @@ var UserBusiness = (function () {
                         if (!accessToken) {
                             throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
                         }
-                        return [4, this.userDatabase.getUserById(id)];
+                        return [4, this.userDatabase.checkIfFollows(accessToken.id, id)];
                     case 1:
+                        following = _a.sent();
+                        return [4, this.userDatabase.getUserById(id)];
+                    case 2:
                         userFromDB = _a.sent();
-                        return [2, userFromDB];
+                        return [2, {
+                                user: userFromDB,
+                                following: following
+                            }];
                 }
             });
         });
@@ -130,27 +136,6 @@ var UserBusiness = (function () {
                     case 1:
                         userFromDB = _a.sent();
                         return [2, userFromDB];
-                }
-            });
-        });
-    };
-    UserBusiness.prototype.deleteUser = function (token) {
-        return __awaiter(this, void 0, void 0, function () {
-            var accessToken;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!token) {
-                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
-                        }
-                        accessToken = this.authenticator.getData(token).id;
-                        if (!accessToken) {
-                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
-                        }
-                        return [4, this.userDatabase.deleteUser(accessToken)];
-                    case 1:
-                        _a.sent();
-                        return [2];
                 }
             });
         });
@@ -250,6 +235,27 @@ var UserBusiness = (function () {
                     case 1:
                         result = _a.sent();
                         return [2, result];
+                }
+            });
+        });
+    };
+    UserBusiness.prototype.deleteUser = function (token) {
+        return __awaiter(this, void 0, void 0, function () {
+            var accessToken;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!token) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        accessToken = this.authenticator.getData(token).id;
+                        if (!accessToken) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        return [4, this.userDatabase.deleteUser(accessToken)];
+                    case 1:
+                        _a.sent();
+                        return [2];
                 }
             });
         });

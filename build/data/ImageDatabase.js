@@ -92,7 +92,7 @@ var ImageDatabase = (function (_super) {
                     case 0: return [4, this.getConnection().raw("\n      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags, u.id as user_id\n      FROM " + ImageDatabase.TABLE_NAME + " i\n      JOIN " + ImageDatabase.TABLE_USERS + " u\n      ON i.author = u.nickname\n      WHERE i.id = \"" + id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        return [2, result[0]];
+                        return [2, result[0][0]];
                 }
             });
         });
@@ -108,6 +108,7 @@ var ImageDatabase = (function (_super) {
                             .where({ author: author })];
                     case 1:
                         result = _a.sent();
+                        console.log(result);
                         return [2, result];
                 }
             });

@@ -166,7 +166,7 @@ var ImageController = (function () {
                         _a.trys.push([0, 2, , 3]);
                         token = req.headers.authorization;
                         id = req.params.imageId;
-                        return [4, ImageController.imageBusiness.delete(token, id)];
+                        return [4, ImageController.imageBusiness.deleteImage(token, id)];
                     case 1:
                         _a.sent();
                         res.status(200).send({ message: "Image deleted successfully" });
