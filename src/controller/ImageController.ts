@@ -104,6 +104,24 @@ export class ImageController {
         await BaseDatabase.destroyConnection();
     }
 
+    async deleteImageFromCollection(req: Request, res: Response) {
+
+        try {
+            const token = req.headers.authorization as string;
+            const imageId = req.params.imageId
+            const collectionId = req.body.collectionId
+
+            await ImageController.imageBusiness.deleteImageFromCollection(token, imageId, collectionId);
+
+            res.status(200).send({ message: "Image deleted from collection successfully" });
+
+        } catch (error) {
+            res.status(400).send({ error: error.message });
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
     public searchImage = async(req: Request, res: Response) => {
         try {
             const searchData: SearchImageDTO = {

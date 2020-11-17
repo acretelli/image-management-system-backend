@@ -75,7 +75,35 @@ export class ImageBusiness {
             throw new UnauthorizedError("You don't have permission to do that.");
         }
 
+        const alreadyFollow = await this.imageDatabase.checkIfInCollection(collectionId, imageId)
+
+        if (alreadyFollow) {
+            throw new UnauthorizedError("This image is already in this collection.");
+        }
+
         await this.imageDatabase.addImageInCollection(id, imageId, collectionId);
+    }
+
+    async deleteImageFromCollection(token: string, imageId: string, collectionId: string) {
+
+        if (!imageId || !collectionId) {
+            throw new InvalidParameterError("Missing input.");
+        }
+
+        const id = this.idGenerator.generate();
+        const accessToken = this.authenticator.getData(token);
+
+        if (!accessToken) {
+            throw new UnauthorizedError("You don't have permission to do that.");
+        }
+
+        const alreadyFollow = await this.imageDatabase.checkIfInCollection(collectionId, imageId)
+
+        if (!alreadyFollow) {
+            throw new UnauthorizedError("This image is not in the collection.");
+        }
+
+        await this.imageDatabase.deleteImageFromCollection(imageId, collectionId);
     }
 
     public async searchImage(searchData: SearchImageDTO): Promise<Image[]> {

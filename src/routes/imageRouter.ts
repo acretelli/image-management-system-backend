@@ -9,5 +9,6 @@ imageRouter.post("/add", imageController.createImage);
 imageRouter.get("/all", imageController.getAllImages);
 imageRouter.get("/search", imageController.searchImage);
 imageRouter.post("/:imageId/addcollection", imageController.addImageToCollection);
+imageRouter.delete("/:imageId/deleteFromcollection", imageController.deleteImageFromCollection);
 imageRouter.delete("/:imageId/delete", imageController.deleteImage);
 imageRouter.get("/:imageId", imageController.getImageById);

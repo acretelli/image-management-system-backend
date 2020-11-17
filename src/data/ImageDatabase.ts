@@ -67,17 +67,41 @@ export class ImageDatabase extends BaseDatabase {
       .from(ImageDatabase.TABLE_NAME)
       .where({ id });
   }
-
+  
   public async addImageInCollection(id: string, image_id: string, collection_id: string): Promise<void> {
     await this.getConnection()
-      .insert({
-        id,
-        image_id,
-        collection_id
-      })
+    .insert({
+      id,
+      image_id,
+      collection_id
+    })
       .into(ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS);
   }
 
+  public async checkIfInCollection(collection_id: string, image_id: string): Promise<boolean> {
+    const result = await this.getConnection().raw(`
+      SELECT *
+      FROM ${ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS}
+      WHERE collection_id = "${collection_id}" 
+      AND image_id = "${image_id}"  
+      `);
+      
+    if(result[0][0]) {
+      return true
+    } else {
+      return false
+    }
+  }
+  
+  public async deleteImageFromCollection(collection_id: string, image_id: string): Promise<void> {
+    await this.getConnection().raw(`
+      DELETE
+      FROM ${ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS}
+      WHERE collection_id = "${collection_id}" 
+      AND image_id = "${image_id}"  
+    `);
+  }
+  
   public async searchPost(searchData: SearchImageDTO): Promise<Image[]> {
     const resultsPerPage: number = 5
     const offset: number = resultsPerPage * (searchData.page - 1)

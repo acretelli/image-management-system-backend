@@ -111,7 +111,7 @@ var ImageBusiness = (function () {
     };
     ImageBusiness.prototype.addImageInCollection = function (token, imageId, collectionId) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, accessToken;
+            var id, accessToken, alreadyFollow;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -123,8 +123,42 @@ var ImageBusiness = (function () {
                         if (!accessToken) {
                             throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
                         }
-                        return [4, this.imageDatabase.addImageInCollection(id, imageId, collectionId)];
+                        return [4, this.imageDatabase.checkIfInCollection(collectionId, imageId)];
                     case 1:
+                        alreadyFollow = _a.sent();
+                        if (alreadyFollow) {
+                            throw new UnauthorizedError_1.UnauthorizedError("This image is already in this collection.");
+                        }
+                        return [4, this.imageDatabase.addImageInCollection(id, imageId, collectionId)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    ImageBusiness.prototype.deleteImageFromCollection = function (token, imageId, collectionId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, accessToken, alreadyFollow;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!imageId || !collectionId) {
+                            throw new InvalidParameterError_1.InvalidParameterError("Missing input.");
+                        }
+                        id = this.idGenerator.generate();
+                        accessToken = this.authenticator.getData(token);
+                        if (!accessToken) {
+                            throw new UnauthorizedError_1.UnauthorizedError("You don't have permission to do that.");
+                        }
+                        return [4, this.imageDatabase.checkIfInCollection(collectionId, imageId)];
+                    case 1:
+                        alreadyFollow = _a.sent();
+                        if (!alreadyFollow) {
+                            throw new UnauthorizedError_1.UnauthorizedError("This image is not in the collection.");
+                        }
+                        return [4, this.imageDatabase.deleteImageFromCollection(imageId, collectionId)];
+                    case 2:
                         _a.sent();
                         return [2];
                 }
