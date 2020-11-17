@@ -166,7 +166,7 @@ var ImageController = (function () {
                         _a.trys.push([0, 2, , 3]);
                         token = req.headers.authorization;
                         id = req.params.imageId;
-                        return [4, ImageController.imageBusiness.delete(token, id)];
+                        return [4, ImageController.imageBusiness.deleteImage(token, id)];
                     case 1:
                         _a.sent();
                         res.status(200).send({ message: "Image deleted successfully" });
@@ -201,6 +201,33 @@ var ImageController = (function () {
                     case 2:
                         error_5 = _a.sent();
                         res.status(400).send({ error: error_5.message });
+                        return [3, 3];
+                    case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
+                    case 4:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    ImageController.prototype.deleteImageFromCollection = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, imageId, collectionId, error_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        token = req.headers.authorization;
+                        imageId = req.params.imageId;
+                        collectionId = req.body.collectionId;
+                        return [4, ImageController.imageBusiness.deleteImageFromCollection(token, imageId, collectionId)];
+                    case 1:
+                        _a.sent();
+                        res.status(200).send({ message: "Image deleted from collection successfully" });
+                        return [3, 3];
+                    case 2:
+                        error_6 = _a.sent();
+                        res.status(400).send({ error: error_6.message });
                         return [3, 3];
                     case 3: return [4, BaseDatabase_1.BaseDatabase.destroyConnection()];
                     case 4:

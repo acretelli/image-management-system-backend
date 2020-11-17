@@ -245,26 +245,19 @@ var UserDatabase = (function (_super) {
     };
     UserDatabase.prototype.getUserFeed = function (user_id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, relation, following, imageDatabase, images;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + UserDatabase.TABLE_FOLLOW + " f\n      WHERE f.user_id = \"" + user_id + "\" \n    ")];
+                    case 0: return [4, this.getConnection().raw("\n      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags\n      FROM " + UserDatabase.TABLE_FOLLOW + " f\n      JOIN " + UserDatabase.TABLE_NAME + " u\n      ON f.following_id = u.id\n      JOIN " + UserDatabase.TABLE_IMAGES + " i\n      ON u.nickname = i.author\n      WHERE f.user_id = \"" + user_id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        relation = result[0][0];
-                        return [4, this.getUserById(relation.following_id)];
-                    case 2:
-                        following = _a.sent();
-                        imageDatabase = new ImageDatabase_1.ImageDatabase();
-                        return [4, imageDatabase.getImagesFromUser(following.nickname)];
-                    case 3:
-                        images = _a.sent();
-                        return [2, images];
+                        return [2, result[0]];
                 }
             });
         });
     };
     UserDatabase.TABLE_NAME = "image_management_users";
+    UserDatabase.TABLE_IMAGES = "image_management_images";
     UserDatabase.TABLE_FOLLOW = "image_management_users_following";
     return UserDatabase;
 }(BaseDatabase_1.BaseDatabase));

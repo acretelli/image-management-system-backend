@@ -145,7 +145,7 @@ export class UserController {
 
             await UserController.userBusiness.unfollowUser(token, followingId);
 
-            res.status(200).send({ message: "You're not following this suser anymore." })
+            res.status(200).send({ message: "You're not following this user anymore." })
         } catch (err) {
             res.status(400).send(err.message)
         }

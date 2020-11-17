@@ -5,6 +5,7 @@ import { ImageDatabase } from "./ImageDatabase";
 export class UserDatabase extends BaseDatabase {
 
   private static TABLE_NAME = "image_management_users";
+  private static TABLE_IMAGES = "image_management_images";
   private static TABLE_FOLLOW = "image_management_users_following";
 
   public async createUser(
@@ -150,17 +151,15 @@ export class UserDatabase extends BaseDatabase {
 
   public async getUserFeed(user_id: string): Promise<any> {
     const result = await this.getConnection().raw(`
-      SELECT *
+      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags
       FROM ${UserDatabase.TABLE_FOLLOW} f
-      WHERE f.user_id = "${user_id}" 
+      JOIN ${UserDatabase.TABLE_NAME} u
+      ON f.following_id = u.id
+      JOIN ${UserDatabase.TABLE_IMAGES} i
+      ON u.nickname = i.author
+      WHERE f.user_id = "${user_id}"
     `);
 
-    const relation: any = result[0][0]
-    const following = await this.getUserById(relation.following_id)
-
-    const imageDatabase = new ImageDatabase();
-    const images:any[] = await imageDatabase.getImagesFromUser(following.nickname)
-  
-    return images;
+    return result[0];
   }
 }

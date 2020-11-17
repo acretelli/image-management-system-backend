@@ -92,7 +92,7 @@ var ImageDatabase = (function (_super) {
                     case 0: return [4, this.getConnection().raw("\n      SELECT i.id, i.subtitle, i.author, i.date, i.file, i.tags, u.id as user_id\n      FROM " + ImageDatabase.TABLE_NAME + " i\n      JOIN " + ImageDatabase.TABLE_USERS + " u\n      ON i.author = u.nickname\n      WHERE i.id = \"" + id + "\"\n    ")];
                     case 1:
                         result = _a.sent();
-                        return [2, result[0]];
+                        return [2, result[0][0]];
                 }
             });
         });
@@ -154,6 +154,37 @@ var ImageDatabase = (function (_super) {
                             collection_id: collection_id
                         })
                             .into(ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    ImageDatabase.prototype.checkIfInCollection = function (collection_id, image_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection().raw("\n      SELECT *\n      FROM " + ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS + "\n      WHERE collection_id = \"" + collection_id + "\" \n      AND image_id = \"" + image_id + "\"  \n      ")];
+                    case 1:
+                        result = _a.sent();
+                        if (result[0][0]) {
+                            return [2, true];
+                        }
+                        else {
+                            return [2, false];
+                        }
+                        return [2];
+                }
+            });
+        });
+    };
+    ImageDatabase.prototype.deleteImageFromCollection = function (collection_id, image_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.getConnection().raw("\n      DELETE\n      FROM " + ImageDatabase.TABLE_COLLECTIONS_RELATIONSHIPS + "\n      WHERE collection_id = \"" + collection_id + "\" \n      AND image_id = \"" + image_id + "\"  \n    ")];
                     case 1:
                         _a.sent();
                         return [2];
